@@ -20,7 +20,7 @@ import Gantt 1.0
 
 ApplicationWindow {
     visible: true
-    width: 640
+    width: 1500
     height: 480
     title: qsTr("QML Gantt Sample")
 
@@ -40,6 +40,8 @@ ApplicationWindow {
             }
         }
     }
+
+    property int currentZoom: 1;
 
     Rectangle{
         height: parent.height - 14
@@ -156,13 +158,37 @@ ApplicationWindow {
     }
 
     Rectangle{
+        id: timeContainer
         height: parent.height
         width: parent.width - 152
         x: 152
 
-        ScrollView{
+        focus: true
+        Keys.onPressed: {
+            //console.log("GOT KEY?");
+            if (event.key === Qt.Key_D) {
+                timeSlider.value += 1;
+                centerGanttView();
+            }
+
+            if(event.key === Qt.Key_Z) {
+                currentZoom = Math.max(1, currentZoom - 1);
+                //timeSlider.width = ganttModelList.contentWidth
+            }
+
+            if(event.key === Qt.Key_X) {
+                currentZoom += 1;
+                //timeSlider.width = ganttModelList.contentWidth
+            }
+
+            console.log("vpw", ganttLine.viewportWidth);
+        }
+
+        ScrollView {
             id: mainScroll
-            anchors.fill: parent
+            height: parent.height - 40
+            width: parent.width
+            horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
 
             ListView{
                 id: ganttView
@@ -191,10 +217,44 @@ ApplicationWindow {
                                 ganttEditWindow.ganttItem = item
                                 ganttEditWindow.visible = true
                             }
+                            zoomScale: currentZoom
                         }
                     }
                 }
             }
+        }
+
+        ScrollView {
+            id: timeScroll
+            height: 40
+            width: parent.width
+            anchors.bottom: parent.bottom
+            flickableItem.onContentXChanged: {
+                //console.log("CONTENT X CHANGED");
+                ganttView.contentX = flickableItem.contentX;
+                placePositionBar();
+            }
+
+            Slider {
+                id: timeSlider
+                minimumValue: 0
+                maximumValue: 1000
+                value: 500
+                width: ganttModelList.contentWidth
+                tickmarksEnabled: true
+                stepSize: 1
+                onValueChanged: {
+                    placePositionBar();
+                }
+            }
+        }
+
+        Rectangle {
+            id: timePositionBar
+            width: 2
+            height: parent.height
+            color: "red"
+            x: 200
         }
     }
 
@@ -204,5 +264,42 @@ ApplicationWindow {
     }
     GanttHelpWindow{
         id: ganttHelpWindow
+    }
+
+    function placePositionBar()
+    {
+        // get the percentage within the slider
+        var percInSlider = timeSlider.value / timeSlider.maximumValue;
+
+        // is it in the visible viewport??
+        var startX = timeScroll.flickableItem.visibleArea.xPosition;
+        var endX = timeScroll.flickableItem.visibleArea.xPosition + timeScroll.flickableItem.visibleArea.widthRatio;
+
+        if(startX < percInSlider && endX > percInSlider) {
+            // we are in the middle
+            timePositionBar.color = "red"
+            // put the bar on top of the slider thumb
+            var realX = ((percInSlider - startX) / timeScroll.flickableItem.visibleArea.widthRatio) * timeScroll.flickableItem.width;
+            timePositionBar.x = realX;
+
+        } else if (startX < percInSlider) {
+            // after
+            timePositionBar.color = "blue";
+            timePositionBar.x = timeContainer.width - 20;
+        } else {
+            // before
+            timePositionBar.color = "green";
+            timePositionBar.x = 0;
+        }
+    }
+
+    function centerGanttView()
+    {
+        // place it at the slider value content x, and subtract half of the real width so it centers
+        var percInSlider = timeSlider.value / timeSlider.maximumValue;
+        timeScroll.flickableItem.contentX =
+                (percInSlider * timeScroll.flickableItem.contentWidth) -
+                (timeScroll.flickableItem.width / 2);
+
     }
 }
