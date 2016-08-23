@@ -17,6 +17,7 @@
 import QtQuick 2.2
 import QtQuick.Controls 1.1
 import Gantt 1.0
+import "timeutils.js" as TimeUtils
 
 ApplicationWindow {
     visible: true
@@ -173,15 +174,24 @@ ApplicationWindow {
 
             if(event.key === Qt.Key_Z) {
                 currentZoom = Math.max(1, currentZoom - 1);
+                ganttModelList.setZoomFactor(currentZoom);
+                centerGanttView();
                 //timeSlider.width = ganttModelList.contentWidth
             }
 
             if(event.key === Qt.Key_X) {
-                currentZoom += 1;
+                currentZoom = Math.min(8, currentZoom += 1);
+                ganttModelList.setZoomFactor(currentZoom);
+                centerGanttView();
                 //timeSlider.width = ganttModelList.contentWidth
+                //console.log("cw", ganttModelList.contentWidth);
             }
 
-            console.log("vpw", ganttLine.viewportWidth);
+            if(event.key === Qt.Key_B) {
+                currentZoom = 1;
+                ganttModelList.setZoomFactor(currentZoom);
+                centerGanttView();
+            }
         }
 
         ScrollView {
@@ -189,6 +199,8 @@ ApplicationWindow {
             height: parent.height - 40
             width: parent.width
             horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
+
+
 
             ListView{
                 id: ganttView
@@ -227,12 +239,12 @@ ApplicationWindow {
         ScrollView {
             id: timeScroll
             height: 40
-            width: parent.width
+            width: parent.width - 20
             anchors.bottom: parent.bottom
             flickableItem.onContentXChanged: {
                 //console.log("CONTENT X CHANGED");
                 ganttView.contentX = flickableItem.contentX;
-                placePositionBar();
+                updateBars();
             }
 
             Slider {
@@ -244,17 +256,24 @@ ApplicationWindow {
                 tickmarksEnabled: true
                 stepSize: 1
                 onValueChanged: {
-                    placePositionBar();
+                    updateBars();
                 }
             }
         }
 
-        Rectangle {
-            id: timePositionBar
-            width: 2
+        /* move this fucker up to not obscure the items ?? */
+        Item {
+            id: timeIndicatorContainer
             height: parent.height
-            color: "red"
-            x: 200
+        }
+
+        TimeBar {
+            x: 700
+            id: timePositionBar
+            barColor: "red"
+            barOpacity: 1.0
+            textColor: "red"
+            label: "00:00"
         }
     }
 
@@ -264,6 +283,63 @@ ApplicationWindow {
     }
     GanttHelpWindow{
         id: ganttHelpWindow
+    }
+
+    function updateBars()
+    {
+        placePositionBar();
+        placeTimeBars(60,
+                      Math.max(1,Math.floor(10 / currentZoom)),
+                      5);
+
+    }
+
+    function placeTimeBars(large, medium, small)
+    {
+        // remove all children and redo them?
+        // or just reuse them?
+        for(var i = timeIndicatorContainer.children.length; i > 0 ; i--) {
+                //console.log("destroying: " + i)
+                timeIndicatorContainer.children[i-1].destroy()
+              }
+
+        // now we need to check on which seconds are we placing this
+
+        // so first find thew starting second and ending second
+        var startTime = Math.floor(timeSlider.maximumValue * timeScroll.flickableItem.visibleArea.xPosition);
+        var endTime = Math.floor(timeSlider.maximumValue *
+                                 (timeScroll.flickableItem.visibleArea.xPosition + timeScroll.flickableItem.visibleArea.widthRatio));
+        //console.log("s", startTime, "e", endTime);
+
+        // new in each interval we do it
+        for (var time = startTime; time < endTime; time++) {
+
+
+            var realX = ((((time / timeSlider.maximumValue) - timeScroll.flickableItem.visibleArea.xPosition)
+                         / timeScroll.flickableItem.visibleArea.widthRatio) * timeScroll.flickableItem.width) - 50;
+
+            if(time % large == 0) {
+                var big = Qt.createComponent("TimeBar.qml");
+                big.createObject(timeIndicatorContainer, {"x": realX, "label": TimeUtils.secondsToMinutes(time), "barTickness": 4,
+                                 "barOpacity": 0.7, "labelVisible": true});
+
+            } else
+
+            if(time % medium == 0) {
+                 //console.log("time", time);
+                var med = Qt.createComponent("TimeBar.qml");
+                med.createObject(timeIndicatorContainer, {"x": realX, "label": TimeUtils.secondsToMinutes(time), "barTickness": 2});
+            } else
+
+            if(time % small == 0) {
+                var sml = Qt.createComponent("TimeBar.qml");
+                sml.createObject(timeIndicatorContainer, {"x": realX, "label": TimeUtils.secondsToMinutes(time), "barTickness": 1,
+                                 "barOpacity": 0.1, "labelVisible": false});
+            }
+        }
+        //var test = Qt.createComponent("TimeBar.qml");
+        //test.createObject(timeIndicatorContainer, {"x": 400, "label": TimeUtils.secondsToMinutes(123)});
+
     }
 
     function placePositionBar()
@@ -277,20 +353,22 @@ ApplicationWindow {
 
         if(startX < percInSlider && endX > percInSlider) {
             // we are in the middle
-            timePositionBar.color = "red"
+            timePositionBar.barColor = "red"
             // put the bar on top of the slider thumb
             var realX = ((percInSlider - startX) / timeScroll.flickableItem.visibleArea.widthRatio) * timeScroll.flickableItem.width;
-            timePositionBar.x = realX;
+            timePositionBar.x = realX - 50;
 
         } else if (startX < percInSlider) {
             // after
-            timePositionBar.color = "blue";
-            timePositionBar.x = timeContainer.width - 20;
+            timePositionBar.barColor = "blue";
+            timePositionBar.x = timeContainer.width - 20 - 50;
         } else {
             // before
-            timePositionBar.color = "green";
-            timePositionBar.x = 0;
+            timePositionBar.barColor = "green";
+            timePositionBar.x = 0 - 50;
         }
+
+        timePositionBar.label = TimeUtils.secondsToMinutes(timeSlider.value);
     }
 
     function centerGanttView()

@@ -18,6 +18,7 @@
 #include "qganttmodel.h"
 
 #include <QDebug>
+#include <QtGlobal>
 class QGanttModelContainer{
 public:
     ~QGanttModelContainer(){ delete model; }
@@ -30,6 +31,7 @@ public:
 QGanttModelList::QGanttModelList(QObject* parent)
     : QAbstractListModel(parent)
 {
+    m_zoomFactor = 1LL;
 }
 
 QGanttModelList::QGanttModelList(qint64 size, QObject *parent)
@@ -104,4 +106,17 @@ bool QGanttModelList::removeRows(int row, int count, const QModelIndex &parent){
     endRemoveRows();
     return true;
 }
+
+/*void QGanttModelList::zoomIn()
+{
+    // 8LL = 8 long long
+    m_zoomFactor = qMin(8LL, m_zoomFactor + 1);
+    emit zoomFactorChanged(m_zoomFactor);
+}
+
+void QGanttModelList::zoomOut()
+{
+    m_zoomFactor = qMax(1LL, m_zoomFactor - 1);
+    emit zoomFactorChanged(m_zoomFactor);
+}*/
 

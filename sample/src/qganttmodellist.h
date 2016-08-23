@@ -27,6 +27,7 @@ class QGanttModelList : public QAbstractListModel{
 
     Q_OBJECT
     Q_PROPERTY(qint64 contentWidth READ contentWidth NOTIFY contentWidthChanged)
+    Q_PROPERTY(qint64 zoomFactor READ zoomFactor WRITE setZoomFactor NOTIFY zoomFactorChanged)
 
 public:
     enum Roles{
@@ -54,14 +55,36 @@ public:
     qint64 contentWidth() const;
     void setContentWidth(qint64 arg);
 
+    qint64 zoomFactor() const
+    {
+        return m_zoomFactor;
+    }
+
+    //Q_INVOKABLE void zoomIn();
+    //Q_INVOKABLE void zoomOut();
+
+public slots:
+    void setZoomFactor(qint64 zoomFactor)
+    {
+        if (m_zoomFactor == zoomFactor)
+            return;
+
+        m_zoomFactor = zoomFactor;
+        emit zoomFactorChanged(zoomFactor);
+        emit contentWidthChanged(m_contentWidth * zoomFactor);
+    }
+
 signals:
     void contentWidthChanged(qint64 arg);
+
+    void zoomFactorChanged(qint64 zoomFactor);
 
 private:
     QList<QGanttModelContainer*> m_items;
     QHash<int, QByteArray> m_roles;
 
     qint64 m_contentWidth;
+    qint64 m_zoomFactor;
 };
 
 inline int QGanttModelList::rowCount(const QModelIndex &) const{
@@ -69,7 +92,7 @@ inline int QGanttModelList::rowCount(const QModelIndex &) const{
 }
 
 inline qint64 QGanttModelList::contentWidth() const{
-    return m_contentWidth;
+    return m_contentWidth * m_zoomFactor;
 }
 
 inline void QGanttModelList::setContentWidth(qint64 arg){

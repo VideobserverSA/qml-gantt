@@ -9,5 +9,7 @@
         <file>img/help-edit-row.png</file>
         <file>img/help-move-item.png</file>
         <file>img/help-stretch-item.png</file>
+        <file>TimeBar.qml</file>
+        <file>timeutils.js</file>
     </qresource>
 </RCC>

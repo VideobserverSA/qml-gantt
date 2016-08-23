@@ -22,3 +22,5 @@ include($$PWD/src/src.pri)
 
 # Default rules for deployment.
 include($$PWD/deployment.pri)
+
+DISTFILES +=
