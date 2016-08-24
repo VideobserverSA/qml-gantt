@@ -24,7 +24,8 @@
 #include "qganttmodellist.h"
 #include "qganttdata.h"
 
-static int CONFIGURATION_MODEL_SIZE = 20000;
+static int CONFIGURATION_MODEL_SIZE = 1500;
+//static int CONFIGURATION_MODEL_SIZE = 20000;
 
 int randBetween(int min, int max){
     return rand() % (max - min + 1) + min;
@@ -49,7 +50,7 @@ int main(int argc, char *argv[])
 
     QGanttModelList modelList(CONFIGURATION_MODEL_SIZE);
 
-    for( int i = 0; i < 100; ++i ){
+    for( int i = 0; i < 5; ++i ){
         QGanttModel* m = new QGanttModel;
         m->setItemDataFactoryFunction(&createModelData);
         m->setContentWidth(CONFIGURATION_MODEL_SIZE);

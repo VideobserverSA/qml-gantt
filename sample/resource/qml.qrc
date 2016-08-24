@@ -11,5 +11,6 @@
         <file>img/help-stretch-item.png</file>
         <file>TimeBar.qml</file>
         <file>timeutils.js</file>
+        <file>VideoTimeline.qml</file>
     </qresource>
 </RCC>
