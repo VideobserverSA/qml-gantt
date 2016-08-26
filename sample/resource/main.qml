@@ -54,7 +54,7 @@ ApplicationWindow {
             id: video
             Layout.minimumHeight: 200
             autoLoad: true
-            autoPlay: true
+            //autoPlay: true
             muted: true
             source: "file:///d:\\VIDEOS TESTE\\wide\\wide.mp4"
             onPositionChanged: {

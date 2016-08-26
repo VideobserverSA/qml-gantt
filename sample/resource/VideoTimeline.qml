@@ -103,13 +103,27 @@ Item {
                 anchors.fill: parent
                 onWheel: {
                     wheel.accepted = true
-                    var newContentY = ganttView.contentY -= wheel.angleDelta.y / 6
-                    if ( newContentY > ganttView.contentHeight - ganttView.height )
-                        ganttView.contentY = ganttView.contentHeight - ganttView.height
-                    else if ( newContentY < 0 )
-                        ganttView.contentY = 0
-                    else
-                        ganttView.contentY = newContentY
+
+                    // check the ctrl for zoom
+                    if (wheel.modifiers & Qt.ControlModifier) {
+
+                        if(wheel.angleDelta.y > 0) {
+                            zoomIn();
+                        } else {
+                            zoomOut();
+                        }
+
+                    } else {
+                        var newContentY = ganttView.contentY -= wheel.angleDelta.y / 6
+                        if ( newContentY > ganttView.contentHeight - ganttView.height )
+                            ganttView.contentY = ganttView.contentHeight - ganttView.height
+                        else if ( newContentY < 0 )
+                            ganttView.contentY = 0
+                        else
+                            ganttView.contentY = newContentY
+                    }
+
+
                 }
                 onClicked: mouse.accepted = false;
                 onPressed: mouse.accepted = false;
@@ -136,17 +150,13 @@ Item {
             }
 
             if(event.key === Qt.Key_Z) {
-                currentZoom = Math.max(1, currentZoom / 2);
-                ganttModelList.setZoomFactor(currentZoom);
-                centerGanttView();
+                zoomOut();
+
                 //timeSlider.width = ganttModelList.contentWidth
             }
 
             if(event.key === Qt.Key_X) {
-                currentZoom = Math.min(1024, currentZoom * 2);
-                ganttModelList.setZoomFactor(currentZoom);
-                console.log("curr zoom", currentZoom);
-                centerGanttView();
+                zoomIn();
 
                 // debug
                 //console.log("sw", timeSlider.width, "cw", ganttModelList.contentWidth);
@@ -167,8 +177,6 @@ Item {
             height: parent.height - 40
             width: parent.width
             horizontalScrollBarPolicy: Qt.ScrollBarAlwaysOff
-
-
 
             ListView{
                 id: ganttView
@@ -198,6 +206,34 @@ Item {
                                 ganttEditWindow.visible = true
                             }
                             zoomScale: currentZoom
+                        }
+                    }
+                }
+
+                MouseArea {
+                    anchors.fill: parent
+                    onClicked: mouse.accepted = false;
+                    onPressed: mouse.accepted = false;
+                    onReleased: mouse.accepted = false
+                    onDoubleClicked: mouse.accepted = false;
+                    onPositionChanged: mouse.accepted = false;
+                    onPressAndHold: mouse.accepted = false;
+                    onWheel: {
+                        // check the ctrl for zoom
+                        if (wheel.modifiers & Qt.ControlModifier) {
+                            if(wheel.angleDelta.y > 0) {
+                                zoomIn();
+                            } else {
+                                zoomOut();
+                            }
+                        } else {
+                            var newContentY = ganttView.contentY -= wheel.angleDelta.y / 6
+                            if ( newContentY > ganttView.contentHeight - ganttView.height )
+                                ganttView.contentY = ganttView.contentHeight - ganttView.height
+                            else if ( newContentY < 0 )
+                                ganttView.contentY = 0
+                            else
+                                ganttView.contentY = newContentY
                         }
                     }
                 }
@@ -363,6 +399,21 @@ Item {
 
     function updateValue(value) {
         timeSlider.value = value;
+        centerGanttView();
+    }
+
+    function zoomIn()
+    {
+        currentZoom = Math.min(1024, currentZoom * 2);
+        ganttModelList.setZoomFactor(currentZoom);
+        //console.log("curr zoom", currentZoom);
+        centerGanttView();
+    }
+
+    function zoomOut()
+    {
+        currentZoom = Math.max(1, currentZoom / 2);
+        ganttModelList.setZoomFactor(currentZoom);
         centerGanttView();
     }
 

@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     QGanttModelList modelList(CONFIGURATION_MODEL_SIZE);
 
-    for( int i = 0; i < 5; ++i ){
+    for( int i = 0; i < 100; ++i ){
         QGanttModel* m = new QGanttModel;
         m->setItemDataFactoryFunction(&createModelData);
         m->setContentWidth(CONFIGURATION_MODEL_SIZE);
