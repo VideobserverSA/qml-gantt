@@ -76,6 +76,7 @@ public:
     QHash<int, QByteArray> roleNames() const;
 
     int insertItem(QGanttModelItem* item);
+    QGanttModelItem* searchByUuid(QString uuid);
 
     void setItemDataFactoryFunction(ItemDataFactoryFunction fp);
 

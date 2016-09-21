@@ -107,6 +107,19 @@ bool QGanttModelList::removeRows(int row, int count, const QModelIndex &parent){
     return true;
 }
 
+void QGanttModelList::moveItem(QString uuid, QString direction)
+{
+    //qDebug() << "item uuid" << uuid << "direction" << direction;
+    // find the index of the current item
+    qDebug() << "so how many fucking items" << m_items.count();
+    int itemCurrentIndex = 0;
+    for(int i = 0; i < m_items.count(); i++) {
+        QGanttModelContainer *container = m_items.at(i);
+        container->model->searchByUuid(uuid);
+    }
+
+}
+
 /*void QGanttModelList::zoomIn()
 {
     // 8LL = 8 long long

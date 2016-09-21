@@ -7,6 +7,10 @@ Item {
 
     property int currentZoom: 1;
 
+    signal positionChanged(int position);
+
+
+
     Rectangle{
         height: parent.height - 14
         clip: true
@@ -181,13 +185,48 @@ Item {
             ListView{
                 id: ganttView
 
+                function addItemToGannt(item, index) {
+                    var dele = ganttView.getDelegateInstanceAt(index);
+                    dele.addItem(item);
+                }
+
+                // see for an explanation: http://stackoverflow.com/questions/9039497/how-to-get-an-instantiated-delegate-component-from-a-gridview-or-listview-in-qml
+
+                // Uses black magic to hunt for the delegate instance with the given
+                // index.  Returns undefined if there's no currently instantiated
+                // delegate with that index.
+                function getDelegateInstanceAt(index) {
+                    for(var i = 0; i < contentItem.children.length; ++i) {
+                        var item = contentItem.children[i];
+                        // We have to check for the specific objectName we gave our
+                        // delegates above, since we also get some items that are not
+                        // our delegates here.
+                        if (item.objectName == "ganttDelegate" && item.index == index)
+                            return item;
+                        }
+                    return undefined;
+                }
+
+                function moveItemInModel(uuid, direction) {
+                    // lets do the freaky
+                    //console.log(ganttModelList);
+                    ganttModelList.moveItem(uuid, direction);
+                }
+
                 height: parent.height
                 contentWidth: ganttModelList.contentWidth
                 model: ganttModelList
                 delegate: Rectangle{
+                    objectName: "ganttDelegate"
+                    property int index: model.index
                     height: 40
                     width: ganttLine.width
                     color: "#fff"
+
+                    function addItem(item) {
+                        //console.log("puta do item", item);
+                        ganttLine.addItem(item);
+                    }
 
                     Rectangle{
                         height: 38
@@ -205,6 +244,29 @@ Item {
                                 ganttEditWindow.ganttItem = item
                                 ganttEditWindow.visible = true
                             }
+                            onMoveItem: {
+                                var newIndex = index;
+                                if(direction == "up") {
+                                    newIndex -= 1;
+                                } else {
+                                    newIndex += 1;
+                                }
+                                //console.log("d", direction, "old", index, "new", newIndex);
+                                ganttView.addItemToGannt(item, newIndex);
+                            }
+                            onMoveItemByUuid: {
+                                /*var newIndex = index;
+                                if(direction == "up") {
+                                    newIndex -= 1;
+                                } else {
+                                    newIndex += 1;
+                                }*/
+                                //console.log("d", direction, "old", index, "new", newIndex);
+                                //ganttView.addItemToGannt(item, newIndex);
+                                ganttView.moveItemInModel(uuid, direction);
+
+                            }
+
                             zoomScale: currentZoom
                         }
                     }
@@ -261,6 +323,7 @@ Item {
                 stepSize: 1
                 onValueChanged: {
                     updateBars();
+                    positionChanged(value);
                 }
             }
         }
@@ -399,7 +462,7 @@ Item {
 
     function updateValue(value) {
         timeSlider.value = value;
-        centerGanttView();
+        //centerGanttView();
     }
 
     function zoomIn()

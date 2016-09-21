@@ -15,12 +15,14 @@
 ****************************************************************************/
 
 #include "qganttdata.h"
+#include <QUuid>
 
  const QColor initColors[4] = {QColor("#bb4e4c"), QColor("#218c8d"), QColor("#4f83bd"), QColor("#e39541")};
 
 QGanttData::QGanttData(QObject *parent)
     : QObject(parent)
     , m_color(initColors[rand() % 4]){
+    m_uuid = QUuid::createUuid().toString();
 }
 
 QGanttData::~QGanttData(){

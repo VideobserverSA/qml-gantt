@@ -31,6 +31,7 @@ class Q_GANTT_EXPORT QGanttModelItem : public QObject{
 public:
     explicit QGanttModelItem(QObject *parent = 0);
     QGanttModelItem(qint64 position, qint64 length, QObject* parent = 0);
+    //QGanttModelItem(qint64 position, qint64 length, QString color, QString text, QVariant data, QObject* parent = 0);
     virtual ~QGanttModelItem();
 
     qint64 position() const;

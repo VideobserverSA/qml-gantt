@@ -22,6 +22,8 @@ Rectangle{
     id: root
 
     signal editItem(variant item)
+    signal moveItem(variant item, string direction);
+    signal moveItemByUuid(string uuid, string direction);
 
     property variant model: GanttModel{}
 
@@ -33,6 +35,11 @@ Rectangle{
 
     property color elementBorderColor: "#ccc"
     property color elementBorderFocusColor: "#fff"
+
+    function addItem(item) {
+        console.log("LETS ADD ITEM", item, "color", item.color);
+        rangeView.insertItemViaDelegate(item);
+    }
 
     color: "#ccc"
     width: rangeView.width * zoomScale
@@ -63,6 +70,9 @@ Rectangle{
 
                 clip: true
                 color: modelData.color
+                //uuid: modelData.uuid;
+
+                property string uuid: modelData.uuid;
 
                 x: position * root.zoomScale
 
@@ -172,6 +182,9 @@ Rectangle{
                     height: parent.height
                     color: parent.color
                     MouseArea {
+
+                        property int startY: 0
+
                         anchors.fill: parent
                         cursorShape: Qt.SizeAllCursor
                         drag.target: ganttDelegate
@@ -180,6 +193,7 @@ Rectangle{
                         drag.maximumX: rangeView.width - ganttDelegate.width
                         onPressed: {
                             ganttDelegate.forceActiveFocus()
+                            startY = mouse.y;
                         }
                         onDoubleClicked: {
                             if (mouse.modifiers & Qt.ControlModifier) {
@@ -206,6 +220,36 @@ Rectangle{
                                         ganttDelegate, Math.round(
                                             ganttDelegate.x / root.zoomScale))
                             ganttDelegate.x = position * root.zoomScale
+                        }
+                        onPositionChanged: {
+                            var delta =startY - mouse.y;
+                            if(Math.abs(delta) > 40) {
+                                // fire move up and down
+
+                                // test removal
+                                //rangeView.removeItemViaDelegate(ganttDelegate)
+                                //rangeView.insertItemViaDelegate(ganttDelegate);
+                                ganttDelegate.visible = false;
+
+
+                                //var delegateText = itemText.text;
+                                //var delegateColor = ganttDelegate.color;
+                                //var delegateUuid = ganttDelegate.uuid;
+
+                                //console.log("uiiiii", ganttDelegate.uuid);
+
+                                if (delta > 0) {
+                                    //console.log("move up", delegateText, delegateColor);
+                                    //moveItem(ganttDelegate, "up");
+                                    moveItemByUuid(ganttDelegate.uuid, "up");
+                                } else {
+                                    //console.log("move down", delegateText, delegateColor);
+                                    //moveItem(ganttDelegate, "down");
+                                    moveItemByUuid(ganttDelegate.uuid, "down");
+                                }
+                            }
+
+
                         }
                     }
                 }
@@ -249,6 +293,7 @@ Rectangle{
                 }
 
                 Text {
+                    id: itemText
                     anchors.left: parent.left
                     anchors.leftMargin: 5
                     anchors.verticalCenter: parent.verticalCenter

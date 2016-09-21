@@ -50,16 +50,24 @@ int main(int argc, char *argv[])
 
     QGanttModelList modelList(CONFIGURATION_MODEL_SIZE);
 
-    for( int i = 0; i < 100; ++i ){
+    for( int i = 0; i < 3; ++i ){
         QGanttModel* m = new QGanttModel;
         m->setItemDataFactoryFunction(&createModelData);
         m->setContentWidth(CONFIGURATION_MODEL_SIZE);
 
         int pos = 0, length = 0;
-        while ( pos < CONFIGURATION_MODEL_SIZE - 320 ){
+        while ( pos < CONFIGURATION_MODEL_SIZE - /*320*/ 1200 ){
             pos   += randBetween(40, 300);
             length = randBetween(40, 120);
-            m->insertItem(pos, length);
+
+            QGanttModelItem *testItem = new QGanttModelItem(pos, length);
+            QGanttData *testData = new QGanttData();
+            testData->setColor(QColor::fromRgb(255, 100, 0));
+            testData->setLabel(testData->uuid().mid(1, 6));
+            testItem->setData(QVariant::fromValue(testData));
+
+            //m->insertItem(pos, length);
+            m->insertItem(testItem);
             pos   += length;
         }
 

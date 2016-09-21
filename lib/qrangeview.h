@@ -67,6 +67,7 @@ public slots:
     void setLengthViaDelegate(QQuickItem* delegate, qint64 length);
     void setDataViaDelegate(QQuickItem* delegate, const QString& role, const QVariant& value);
     void removeItemViaDelegate(QQuickItem* delegate);
+    void insertItemViaDelegate(QQuickItem* delegate);
 
 protected:
     void componentComplete();

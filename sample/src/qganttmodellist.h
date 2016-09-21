@@ -60,6 +60,8 @@ public:
         return m_zoomFactor;
     }
 
+    Q_INVOKABLE void moveItem(QString uuid, QString direction);
+
     //Q_INVOKABLE void zoomIn();
     //Q_INVOKABLE void zoomOut();
 

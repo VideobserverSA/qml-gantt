@@ -16,6 +16,7 @@
 
 #include "qrangeview.h"
 #include "qabstractrangemodel.h"
+#include "qganttmodelitem.h"
 #include <QQmlContext>
 
 #include <QDebug>
@@ -395,6 +396,12 @@ void QRangeView::removeItemViaDelegate(QQuickItem *item){
     int relativeIndex = d->findRelativeIndex(index);
 
     d->model->removeItem(rangeItem->position, rangeItem->length, relativeIndex);
+}
+
+void QRangeView::insertItemViaDelegate(QQuickItem *delegate)
+{
+    Q_D(QRangeView);
+    d->model->insertItem(delegate->x(), delegate->width());
 }
 
 void QRangeView::componentComplete(){

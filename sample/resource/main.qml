@@ -18,8 +18,8 @@ import QtQuick 2.2
 import QtQuick.Controls 1.1
 import QtQuick.Layouts 1.1
 import Gantt 1.0
-import QtAV 1.6
-//import QtMultimedia 5.5
+//import QtAV 1.6
+import QtMultimedia 5.5
 import "timeutils.js" as TimeUtils
 
 ApplicationWindow {
@@ -56,9 +56,9 @@ ApplicationWindow {
             autoLoad: true
             //autoPlay: true
             muted: true
-            source: "file:///d:\\VIDEOS TESTE\\wide\\wide.mp4"
+            source: "file:///d:\\VIDEOS TESTE\\braga.mp4"
             onPositionChanged: {
-                //console.log("pos", position);
+                console.log("pos ch video", position);
                 timeline.updateValue( (position / 1000) + 400)
             }
         }
@@ -69,6 +69,10 @@ ApplicationWindow {
                 id: timeline
                 anchors.fill: parent
                 visible: true
+                onPositionChanged: {
+                    console.log("pos ch timeline", position);
+                    //video.seek(position);
+                }
             }
 
 

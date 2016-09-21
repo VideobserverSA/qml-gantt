@@ -1,7 +1,7 @@
 TEMPLATE = app
 TARGET   = sample
 
-QT += qml quick widgets av avwidgets
+QT += qml quick widgets multimedia
 
 RESOURCES += $$PWD/resource/qml.qrc
 

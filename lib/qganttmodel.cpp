@@ -17,6 +17,7 @@
 #include "qganttmodel.h"
 #include "qganttmodelitem.h"
 #include <QVariant>
+#include <QDebug>
 
 // QGanttModelPrivate
 // ----------------------------------------------------------------------------
@@ -40,6 +41,7 @@ public:
 
     int searchFirstIndex(qint64 position);
     int searchFirstIndex(qint64 position, qint64 length);
+    QGanttModelItem* searchByUuid(QString uuid);
 };
 
 QGanttModelPrivate::~QGanttModelPrivate(){
@@ -90,6 +92,17 @@ int QGanttModelPrivate::searchFirstIndex(qint64 position, qint64 length){
         ++index;
     }
     return items.size();
+}
+
+QGanttModelItem *QGanttModelPrivate::searchByUuid(QString uuid)
+{
+        foreach(QGanttModelItem *item, items) {
+            //QGanttData *itemData = item->data();
+            //QVariant itemData = item->data();
+            //itemData.
+            qDebug() << "putas e vinho verde" << item->data().typeName();
+        }
+        return NULL;
 }
 
 // QGanttModel
@@ -228,6 +241,12 @@ int QGanttModel::insertItem(QGanttModelItem* item){
     }
     d->items.insert(index, item);
     return index;
+}
+
+QGanttModelItem *QGanttModel::searchByUuid(QString uuid)
+{
+    Q_D(QGanttModel);
+    return d->searchByUuid(uuid);
 }
 
 void QGanttModel::setItemDataFactoryFunction(QGanttModel::ItemDataFactoryFunction fp){
