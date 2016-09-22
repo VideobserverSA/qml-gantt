@@ -22,7 +22,6 @@
 QGanttData::QGanttData(QObject *parent)
     : QObject(parent)
     , m_color(initColors[rand() % 4]){
-    m_uuid = QUuid::createUuid().toString();
 }
 
 QGanttData::~QGanttData(){

@@ -27,6 +27,7 @@ class Q_GANTT_EXPORT QGanttModelItem : public QObject{
     Q_PROPERTY(qint64 position READ position NOTIFY positionChanged)
     Q_PROPERTY(qint64 length   READ length   NOTIFY lengthChanged)
     Q_PROPERTY(QVariant data   READ data     NOTIFY dataChanged)
+    Q_PROPERTY(QString uuid READ uuid WRITE setUuid NOTIFY uuidChanged)
 
 public:
     explicit QGanttModelItem(QObject *parent = 0);
@@ -42,15 +43,33 @@ public:
     void setLength(qint64 arg);
     void setData(const QVariant& data);
 
+    QString uuid() const
+    {
+        return m_uuid;
+    }
+
+public slots:
+    void setUuid(QString uuid)
+    {
+        if (m_uuid == uuid)
+            return;
+
+        m_uuid = uuid;
+        emit uuidChanged(uuid);
+    }
+
 signals:
     void positionChanged();
     void lengthChanged();
     void dataChanged();
 
+    void uuidChanged(QString uuid);
+
 private:
     qint64   m_position;
     qint64   m_length;
     QVariant m_data;
+    QString m_uuid;
 };
 
 inline qint64 QGanttModelItem::position() const{

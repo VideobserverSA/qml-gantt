@@ -9,6 +9,20 @@ Item {
 
     signal positionChanged(int position);
 
+    function debOne() {
+        ganttView.model = null;
+
+    }
+
+    function debTwo() {
+        ganttView.model = ganttModelList;
+    }
+
+    function fuckThis() {
+        ganttView.model = null;
+        ganttView.model = ganttModelList;
+    }
+
 
 
     Rectangle{
@@ -186,8 +200,8 @@ Item {
                 id: ganttView
 
                 function addItemToGannt(item, index) {
-                    var dele = ganttView.getDelegateInstanceAt(index);
-                    dele.addItem(item);
+                    //var dele = ganttView.getDelegateInstanceAt(index);
+                    //dele.addItem(item);
                 }
 
                 // see for an explanation: http://stackoverflow.com/questions/9039497/how-to-get-an-instantiated-delegate-component-from-a-gridview-or-listview-in-qml
@@ -265,6 +279,13 @@ Item {
                                 //ganttView.addItemToGannt(item, newIndex);
                                 ganttView.moveItemInModel(uuid, direction);
 
+                            }
+                            onPorra: {
+                                //console.log("porra");
+                                //ganttView.update();
+                                //ganttView.model = 0;
+                               //ganttView.model = ganttModelList
+                                fuckThis();
                             }
 
                             zoomScale: currentZoom

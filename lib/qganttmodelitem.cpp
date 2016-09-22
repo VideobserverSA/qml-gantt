@@ -16,12 +16,14 @@
 
 #include "qganttmodelitem.h"
 #include <QDebug>
+#include <QUuid>
 
 QGanttModelItem::QGanttModelItem(QObject *parent)
     : QObject(parent)
     , m_position(0)
     , m_length(0)
 {
+    m_uuid = QUuid::createUuid().toString();
 }
 
 QGanttModelItem::QGanttModelItem(qint64 position, qint64 length, QObject* parent)
@@ -29,6 +31,7 @@ QGanttModelItem::QGanttModelItem(qint64 position, qint64 length, QObject* parent
     , m_position(position)
     , m_length(length)
 {
+    m_uuid = QUuid::createUuid().toString();
 }
 
 QGanttModelItem::~QGanttModelItem(){

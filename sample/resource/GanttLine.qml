@@ -24,6 +24,7 @@ Rectangle{
     signal editItem(variant item)
     signal moveItem(variant item, string direction);
     signal moveItemByUuid(string uuid, string direction);
+    signal porra();
 
     property variant model: GanttModel{}
 
@@ -72,9 +73,14 @@ Rectangle{
                 color: modelData.color
                 //uuid: modelData.uuid;
 
-                property string uuid: modelData.uuid;
+                //property string uuid: modelData.uuid;
 
                 x: position * root.zoomScale
+
+                /*function fuckThis() {
+                    console.log("item pos", ganttDelegate.x);
+                    console.log(rangeView.model.searchByPosition(ganttDelegate.x).uuid);
+                }*/
 
                 Keys.onPressed: {
                     if (event.key === Qt.Key_Delete) {
@@ -229,7 +235,7 @@ Rectangle{
                                 // test removal
                                 //rangeView.removeItemViaDelegate(ganttDelegate)
                                 //rangeView.insertItemViaDelegate(ganttDelegate);
-                                ganttDelegate.visible = false;
+                               // ganttDelegate.visible = false;
 
 
                                 //var delegateText = itemText.text;
@@ -238,15 +244,21 @@ Rectangle{
 
                                 //console.log("uiiiii", ganttDelegate.uuid);
 
+                                //console.log("modelamos", ganttDelegate);
+                                //ganttDelegate.fuckThis();
+                                //console.log(ganttDelegate.x);
+
                                 if (delta > 0) {
                                     //console.log("move up", delegateText, delegateColor);
                                     //moveItem(ganttDelegate, "up");
-                                    moveItemByUuid(ganttDelegate.uuid, "up");
+                                    moveItemByUuid(rangeView.model.searchByPosition(ganttDelegate.x / root.zoomScale).uuid, "up");
                                 } else {
                                     //console.log("move down", delegateText, delegateColor);
                                     //moveItem(ganttDelegate, "down");
-                                    moveItemByUuid(ganttDelegate.uuid, "down");
+                                    moveItemByUuid(rangeView.model.searchByPosition(ganttDelegate.x /root.zoomScale).uuid, "down");
                                 }
+
+                                porra();
                             }
 
 

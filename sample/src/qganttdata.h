@@ -25,7 +25,6 @@ class QGanttData : public QObject{
     Q_OBJECT
     Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY labelChanged)
     Q_PROPERTY(QColor color  READ color WRITE setColor NOTIFY colorChanged)
-    Q_PROPERTY(QString uuid READ uuid WRITE setUuid NOTIFY uuidChanged)
 
 public:
     explicit QGanttData(QObject *parent = 0);
@@ -34,34 +33,17 @@ public:
     QString label() const;
     QColor  color() const;
 
-    QString uuid() const
-    {
-        return m_uuid;
-    }
-
 signals:
     void labelChanged(QString arg);
     void colorChanged(QColor arg);
-
-    void uuidChanged(QString uuid);
 
 public slots:
     void setLabel(QString arg);
     void setColor(QColor arg);
 
-    void setUuid(QString uuid)
-    {
-        if (m_uuid == uuid)
-            return;
-
-        m_uuid = uuid;
-        emit uuidChanged(uuid);
-    }
-
 private:
     QString m_label;
     QColor  m_color;
-    QString m_uuid;
 };
 
 inline QString QGanttData::label() const{

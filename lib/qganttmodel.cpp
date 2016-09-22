@@ -41,6 +41,7 @@ public:
 
     int searchFirstIndex(qint64 position);
     int searchFirstIndex(qint64 position, qint64 length);
+    QGanttModelItem* searchByPosition(qint64 position);
     QGanttModelItem* searchByUuid(QString uuid);
 };
 
@@ -94,13 +95,26 @@ int QGanttModelPrivate::searchFirstIndex(qint64 position, qint64 length){
     return items.size();
 }
 
+QGanttModelItem *QGanttModelPrivate::searchByPosition(qint64 position)
+{
+        foreach(QGanttModelItem *item, items) {
+            qDebug() << "putas e vinho verde" << item->position();
+            if(item->position() == position)
+            {
+                return item;
+            }
+        }
+        return NULL;
+}
+
+
 QGanttModelItem *QGanttModelPrivate::searchByUuid(QString uuid)
 {
         foreach(QGanttModelItem *item, items) {
-            //QGanttData *itemData = item->data();
-            //QVariant itemData = item->data();
-            //itemData.
-            qDebug() << "putas e vinho verde" << item->data().typeName();
+            if(item->uuid() == uuid)
+            {
+                return item;
+            }
         }
         return NULL;
 }
@@ -243,6 +257,12 @@ int QGanttModel::insertItem(QGanttModelItem* item){
     return index;
 }
 
+QGanttModelItem *QGanttModel::searchByPosition(qint64 position)
+{
+    Q_D(QGanttModel);
+    return d->searchByPosition(position);
+}
+
 QGanttModelItem *QGanttModel::searchByUuid(QString uuid)
 {
     Q_D(QGanttModel);
@@ -284,6 +304,32 @@ void QGanttModel::removeItem(qint64 position, qint64 length, qint64 relativeInde
         }
         ++index;
     }
+}
+
+QGanttModelItem *QGanttModel::removeItem(QString uuid)
+{
+
+    Q_D(QGanttModel);
+
+    qDebug() << "we have: " << d->items.count();
+    //foreach(QGanttModelItem *item, d->items) {
+    for (int i = 0 ; i < d->items.count(); i++) {
+        QGanttModelItem* item = d->items.at(i);
+        if(item->uuid() == uuid)
+        {
+            beginDataChange(item->position(), item->position() +1);
+            //delete d->items.at(i);
+            QGanttModelItem* temp = d->items.takeAt(i);
+            endDataChange();
+
+            qDebug() << "and now: " << d->items.count();
+
+            return temp;
+
+        }
+    }
+    return NULL;
+
 }
 
 bool QGanttModelIterator::isEnd() const{

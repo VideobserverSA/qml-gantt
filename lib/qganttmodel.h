@@ -76,13 +76,16 @@ public:
     QHash<int, QByteArray> roleNames() const;
 
     int insertItem(QGanttModelItem* item);
-    QGanttModelItem* searchByUuid(QString uuid);
+    Q_INVOKABLE QGanttModelItem* searchByPosition(qint64 position);
+    Q_INVOKABLE QGanttModelItem* searchByUuid(QString uuid);
 
     void setItemDataFactoryFunction(ItemDataFactoryFunction fp);
 
 public slots:
     void insertItem(qint64 position, qint64 length);
     void removeItem(qint64 position, qint64 length, qint64 relativeIndex);
+    QGanttModelItem* removeItem(QString uuid);
+    //void insertItem(QGanttModelItem* item);
 
 private:
     QGanttModel(const QGanttModel&);

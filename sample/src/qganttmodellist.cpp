@@ -109,14 +109,35 @@ bool QGanttModelList::removeRows(int row, int count, const QModelIndex &parent){
 
 void QGanttModelList::moveItem(QString uuid, QString direction)
 {
-    //qDebug() << "item uuid" << uuid << "direction" << direction;
+    qDebug() << "item uuid" << uuid << "direction" << direction;
     // find the index of the current item
-    qDebug() << "so how many fucking items" << m_items.count();
+   // qDebug() << "so how many fucking items" << m_items.count();
     int itemCurrentIndex = 0;
     for(int i = 0; i < m_items.count(); i++) {
         QGanttModelContainer *container = m_items.at(i);
-        container->model->searchByUuid(uuid);
+        QGanttModelItem* testModel = container->model->searchByUuid(uuid);
+        if(testModel != NULL) {
+            itemCurrentIndex = i;
+        }
     }
+    int itemNewIndex = 0;
+    // check the new index
+    if(direction == "up") {
+        itemNewIndex = itemCurrentIndex - 1;
+    } else {
+        itemNewIndex = itemCurrentIndex + 1;
+    }
+
+    if(itemNewIndex < 0 || itemNewIndex > (m_items.count() - 1)) {
+        qDebug() << "NO WAY ABORT";
+        return;
+    }
+
+    // then do the switcharoo
+    QGanttModelItem* theItem = m_items.at(itemCurrentIndex)->model->removeItem(uuid);
+    m_items.at(itemNewIndex)->model->insertItem(theItem);
+
+    //qDebug() << "the fucking new index is:" << theItem;
 
 }
 

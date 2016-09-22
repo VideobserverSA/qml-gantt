@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 
     QGanttModelList modelList(CONFIGURATION_MODEL_SIZE);
 
-    for( int i = 0; i < 3; ++i ){
+    for( int i = 0; i < 4; ++i ){
         QGanttModel* m = new QGanttModel;
         m->setItemDataFactoryFunction(&createModelData);
         m->setContentWidth(CONFIGURATION_MODEL_SIZE);
@@ -62,8 +62,8 @@ int main(int argc, char *argv[])
 
             QGanttModelItem *testItem = new QGanttModelItem(pos, length);
             QGanttData *testData = new QGanttData();
-            testData->setColor(QColor::fromRgb(255, 100, 0));
-            testData->setLabel(testData->uuid().mid(1, 6));
+            testData->setColor(QColor::fromRgb(255, 100, 100 * i));
+            testData->setLabel("aa " + QString::number(i) + " " + testItem->uuid().mid(1, 6));
             testItem->setData(QVariant::fromValue(testData));
 
             //m->insertItem(pos, length);

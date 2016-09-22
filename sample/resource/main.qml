@@ -50,18 +50,45 @@ ApplicationWindow {
         anchors.fill: parent
         orientation: Qt.Vertical
 
-        Video {
-            id: video
+        Rectangle {
             Layout.minimumHeight: 200
-            autoLoad: true
-            //autoPlay: true
-            muted: true
-            source: "file:///d:\\VIDEOS TESTE\\braga.mp4"
-            onPositionChanged: {
-                console.log("pos ch video", position);
-                timeline.updateValue( (position / 1000) + 400)
+
+            Video {
+                id: video
+                height: 150
+                autoLoad: true
+                //autoPlay: true
+                muted: true
+                source: "file:///d:\\VIDEOS TESTE\\braga.mp4"
+                onPositionChanged: {
+                    console.log("pos ch video", position);
+                    timeline.updateValue( (position / 1000) + 400)
+                }
             }
+
+
+            Button {
+                text: "DEBUG 1"
+                x: 0
+                y:0
+                onClicked: {
+                    timeline.debOne();
+                }
+            }
+
+            Button {
+                text: "DEBUG 2"
+                x: 0
+                y: 30
+                onClicked:  {
+                    timeline.debTwo();
+                }
+            }
+
+
         }
+
+
 
         Item {
             Layout.minimumHeight: 300
