@@ -20,6 +20,8 @@
 #include "qganttglobal.h"
 #include "qabstractrangemodel.h"
 
+#include <QJsonDocument>
+
 // QGanttModelIterator
 // -------------------
 
@@ -40,6 +42,7 @@ public:
     void nextItem();
 
     QVariant data(int role = 0);
+
 
 private:
     QList<QGanttModelItem*>::iterator m_endIt;
@@ -78,6 +81,8 @@ public:
     int insertItem(QGanttModelItem* item);
     Q_INVOKABLE QGanttModelItem* searchByPosition(qint64 position);
     Q_INVOKABLE QGanttModelItem* searchByUuid(QString uuid);
+    QJsonArray exportModelToJson();
+
 
     void setItemDataFactoryFunction(ItemDataFactoryFunction fp);
 

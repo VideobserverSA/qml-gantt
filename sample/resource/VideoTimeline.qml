@@ -10,7 +10,8 @@ Item {
     signal positionChanged(int position);
 
     function debOne() {
-        ganttView.model = null;
+        //ganttView.model = null;
+        ganttModelList.exportModelToJson();
 
     }
 
@@ -305,9 +306,9 @@ Item {
                         // check the ctrl for zoom
                         if (wheel.modifiers & Qt.ControlModifier) {
                             if(wheel.angleDelta.y > 0) {
-                                zoomIn();
+                                zoomIn(wheel.x);
                             } else {
-                                zoomOut();
+                                zoomOut(wheel.x);
                             }
                         } else {
                             var newContentY = ganttView.contentY -= wheel.angleDelta.y / 6
@@ -471,13 +472,17 @@ Item {
         timePositionBar.label = TimeUtils.secondsToMinutes(timeSlider.value);
     }
 
-    function centerGanttView()
+    function centerGanttView(pos)
     {
+        console.log("center in", pos);
         // place it at the slider value content x, and subtract half of the real width so it centers
-        var percInSlider = timeSlider.value / timeSlider.maximumValue;
+        //var percInSlider = timeSlider.value / timeSlider.maximumValue;
+        var percInSlider = (timeScroll.flickableItem.contentX + pos) / timeScroll.flickableItem.contentWidth;
         timeScroll.flickableItem.contentX =
-                (percInSlider * timeScroll.flickableItem.contentWidth) -
-                (timeScroll.flickableItem.width / 2);
+                Math.max(0,(percInSlider * timeScroll.flickableItem.contentWidth) -
+                (timeScroll.flickableItem.width / 2));
+        console.log(percInSlider, timeScroll.flickableItem.contentX);
+        //timeScroll.flickableItem.contentX = timeScroll.flickableItem.contentX + pos;
 
     }
 
@@ -486,19 +491,21 @@ Item {
         //centerGanttView();
     }
 
-    function zoomIn()
+    function zoomIn(pos)
     {
+        centerGanttView(pos);
         currentZoom = Math.min(1024, currentZoom * 2);
         ganttModelList.setZoomFactor(currentZoom);
         //console.log("curr zoom", currentZoom);
-        centerGanttView();
+
     }
 
-    function zoomOut()
+    function zoomOut(pos)
     {
+        centerGanttView(pos);
         currentZoom = Math.max(1, currentZoom / 2);
         ganttModelList.setZoomFactor(currentZoom);
-        centerGanttView();
+
     }
 
 }

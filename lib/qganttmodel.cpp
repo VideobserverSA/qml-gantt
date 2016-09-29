@@ -16,8 +16,12 @@
 
 #include "qganttmodel.h"
 #include "qganttmodelitem.h"
+#include "../sample/src/qganttdata.h"
 #include <QVariant>
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonArray>
+#include <QJsonObject>
 
 // QGanttModelPrivate
 // ----------------------------------------------------------------------------
@@ -330,6 +334,30 @@ QGanttModelItem *QGanttModel::removeItem(QString uuid)
     }
     return NULL;
 
+}
+
+QJsonArray QGanttModel::exportModelToJson()
+{
+    Q_D(QGanttModel);
+
+    QJsonObject ret = QJsonObject();
+    QJsonArray finalArray = QJsonArray();
+    for (int i = 0 ; i < d->items.count(); i++) {
+        QGanttModelItem* item = d->items.at(i);
+        QJsonObject itemJson = QJsonObject();
+        itemJson.insert("uuid", item->uuid());
+        itemJson.insert("position", item->position());
+        itemJson.insert("length", item->length());
+
+        //QGanttData* testFDX = item->data().value<QGanttData*>();
+        //qDebug() << "FDX FDX FDX NO MODELO" << testFDX->label();
+
+        itemJson.insert("data", QJsonValue::fromVariant(item->data()));
+        finalArray.append(itemJson);
+    }
+
+    //ret.setArray(finalArray);
+    return finalArray;
 }
 
 bool QGanttModelIterator::isEnd() const{

@@ -20,6 +20,7 @@
 #include <QObject>
 #include <QAbstractListModel>
 #include <QList>
+#include <QJsonDocument>
 
 class QGanttModel;
 class QGanttModelContainer;
@@ -61,6 +62,7 @@ public:
     }
 
     Q_INVOKABLE void moveItem(QString uuid, QString direction);
+    Q_INVOKABLE QJsonDocument exportModelToJson();
 
     //Q_INVOKABLE void zoomIn();
     //Q_INVOKABLE void zoomOut();

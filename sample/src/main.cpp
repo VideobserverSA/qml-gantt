@@ -24,6 +24,10 @@
 #include "qganttmodellist.h"
 #include "qganttdata.h"
 
+#include "mytestmodel.h"
+
+Q_DECLARE_METATYPE(QGanttData*);
+
 static int CONFIGURATION_MODEL_SIZE = 1500;
 //static int CONFIGURATION_MODEL_SIZE = 20000;
 
@@ -49,26 +53,32 @@ int main(int argc, char *argv[])
     qmlRegisterType<QGanttModelList>("Gantt", 1, 0, "GanttModelList");
 
     QGanttModelList modelList(CONFIGURATION_MODEL_SIZE);
+    //MyTestModel* myTestModel = new MyTestModel();
 
-    for( int i = 0; i < 4; ++i ){
+    int numRows = 15;
+    for( int i = 0; i < numRows; ++i ){
         QGanttModel* m = new QGanttModel;
         m->setItemDataFactoryFunction(&createModelData);
         m->setContentWidth(CONFIGURATION_MODEL_SIZE);
 
         int pos = 0, length = 0;
-        while ( pos < CONFIGURATION_MODEL_SIZE - /*320*/ 1200 ){
+        while ( pos < CONFIGURATION_MODEL_SIZE - 320 /*1200*/ ){
             pos   += randBetween(40, 300);
             length = randBetween(40, 120);
 
-            QGanttModelItem *testItem = new QGanttModelItem(pos, length);
-            QGanttData *testData = new QGanttData();
-            testData->setColor(QColor::fromRgb(255, 100, 100 * i));
+            QGanttModelItem *testItem = new QGanttModelItem(pos, length, m);
+            QGanttData *testData = new QGanttData(m);
+            testData->setColor(QColor::fromRgb(255,  100, i * (255 / numRows)) );
             testData->setLabel("aa " + QString::number(i) + " " + testItem->uuid().mid(1, 6));
             testItem->setData(QVariant::fromValue(testData));
 
             //m->insertItem(pos, length);
             m->insertItem(testItem);
+            //myTestModel->insertItem(i, testItem);
             pos   += length;
+
+            //QGanttData* testFDX = testItem->data().value<QGanttData*>();
+            //qDebug() << "FDX FDX FDX" << testFDX->label();
         }
 
         modelList.appendModel(m);
@@ -76,6 +86,7 @@ int main(int argc, char *argv[])
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("ganttModelList", &modelList);
+    //engine.rootContext()->setContextProperty("myTestModel", myTestModel);
     engine.load(QUrl(QStringLiteral("qrc:/main.qml")));
 
     return app.exec();

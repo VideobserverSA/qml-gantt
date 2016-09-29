@@ -73,6 +73,7 @@ ApplicationWindow {
                 y:0
                 onClicked: {
                     timeline.debOne();
+                    //console.log(myTestModel.toJsonString());
                 }
             }
 
@@ -81,7 +82,7 @@ ApplicationWindow {
                 x: 0
                 y: 30
                 onClicked:  {
-                    timeline.debTwo();
+                    //timeline.debTwo();
                 }
             }
 

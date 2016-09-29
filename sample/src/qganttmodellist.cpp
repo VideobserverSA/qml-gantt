@@ -19,6 +19,10 @@
 
 #include <QDebug>
 #include <QtGlobal>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
+
 class QGanttModelContainer{
 public:
     ~QGanttModelContainer(){ delete model; }
@@ -139,6 +143,36 @@ void QGanttModelList::moveItem(QString uuid, QString direction)
 
     //qDebug() << "the fucking new index is:" << theItem;
 
+}
+
+QJsonDocument QGanttModelList::exportModelToJson()
+{
+    QJsonDocument ret = QJsonDocument();
+    QJsonArray finalArray = QJsonArray();
+    //ret->insert("rows", finalArray);
+
+    for(int i = 0; i < m_items.count(); i++) {
+        QGanttModelContainer *container = m_items.at(i);
+        // put the name
+        QJsonObject contJson = QJsonObject();
+        contJson.insert("name", container->name);
+        // get the model array?
+        QJsonArray modelJson  =container->model->exportModelToJson();
+        contJson.insert("model", modelJson);
+
+        // insert in the arr
+        finalArray.append(contJson);
+
+
+        //QGanttModelItem* testModel = container->model->searchByUuid(uuid);
+        //if(testModel != NULL) {
+        //    itemCurrentIndex = i;
+        //}
+    }
+
+    ret.setArray(finalArray);
+    qDebug() << "FDX" << ret.toJson(QJsonDocument::Compact);
+    return ret;
 }
 
 /*void QGanttModelList::zoomIn()

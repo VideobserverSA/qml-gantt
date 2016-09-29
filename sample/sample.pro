@@ -24,3 +24,9 @@ include($$PWD/src/src.pri)
 include($$PWD/deployment.pri)
 
 DISTFILES +=
+
+HEADERS += \
+    mytestmodel.h
+
+SOURCES += \
+    mytestmodel.cpp
