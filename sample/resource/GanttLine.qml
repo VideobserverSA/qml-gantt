@@ -24,7 +24,7 @@ Rectangle{
     signal editItem(variant item)
     signal moveItem(variant item, string direction);
     signal moveItemByUuid(string uuid, string direction);
-    signal porra();
+    //signal modelChanged();
 
     property variant model: GanttModel{}
 
@@ -258,7 +258,8 @@ Rectangle{
                                     moveItemByUuid(rangeView.model.searchByPosition(ganttDelegate.x /root.zoomScale).uuid, "down");
                                 }
 
-                                porra();
+                                //porra();
+                                //modelChanged();
                             }
 
 

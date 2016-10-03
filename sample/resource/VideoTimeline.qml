@@ -9,6 +9,12 @@ Item {
 
     signal positionChanged(int position);
 
+    function updateModel() {
+        ganttView.model = null;
+        ganttView.model = ganttModelList;
+
+    }
+
     function debOne() {
         //ganttView.model = null;
         ganttModelList.exportModelToJson();
@@ -16,11 +22,6 @@ Item {
     }
 
     function debTwo() {
-        ganttView.model = ganttModelList;
-    }
-
-    function fuckThis() {
-        ganttView.model = null;
         ganttView.model = ganttModelList;
     }
 
@@ -279,14 +280,8 @@ Item {
                                 //console.log("d", direction, "old", index, "new", newIndex);
                                 //ganttView.addItemToGannt(item, newIndex);
                                 ganttView.moveItemInModel(uuid, direction);
+                                updateModel();
 
-                            }
-                            onPorra: {
-                                //console.log("porra");
-                                //ganttView.update();
-                                //ganttView.model = 0;
-                               //ganttView.model = ganttModelList
-                                fuckThis();
                             }
 
                             zoomScale: currentZoom
@@ -478,9 +473,10 @@ Item {
         // place it at the slider value content x, and subtract half of the real width so it centers
         //var percInSlider = timeSlider.value / timeSlider.maximumValue;
         var percInSlider = (timeScroll.flickableItem.contentX + pos) / timeScroll.flickableItem.contentWidth;
-        timeScroll.flickableItem.contentX =
-                Math.max(0,(percInSlider * timeScroll.flickableItem.contentWidth) -
-                (timeScroll.flickableItem.width / 2));
+        var calculated = (percInSlider * timeScroll.flickableItem.contentWidth) -
+                (timeScroll.flickableItem.width / 2);
+        timeScroll.flickableItem.contentX = TimeUtils.minMax(calculated, 0, timeScroll.flickableItem.contentWidth);
+
         console.log(percInSlider, timeScroll.flickableItem.contentX);
         //timeScroll.flickableItem.contentX = timeScroll.flickableItem.contentX + pos;
 
