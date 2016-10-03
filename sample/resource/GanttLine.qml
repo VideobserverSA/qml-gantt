@@ -247,6 +247,7 @@ Rectangle{
                                 //console.log("modelamos", ganttDelegate);
                                 //ganttDelegate.fuckThis();
                                 //console.log(ganttDelegate.x);
+                                //console.log("MD", modelData.variant.myString);
 
                                 if (delta > 0) {
                                     //console.log("move up", delegateText, delegateColor);

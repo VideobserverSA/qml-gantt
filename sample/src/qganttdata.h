@@ -19,12 +19,14 @@
 
 #include <QObject>
 #include <QColor>
+#include <QVariant>
 
 class QGanttData : public QObject{
 
     Q_OBJECT
     Q_PROPERTY(QString label READ label WRITE setLabel NOTIFY labelChanged)
     Q_PROPERTY(QColor color  READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(QVariant variant READ variant WRITE setVariant NOTIFY variantChanged)
 
 public:
     explicit QGanttData(QObject *parent = 0);
@@ -33,17 +35,34 @@ public:
     QString label() const;
     QColor  color() const;
 
+    QVariant variant() const
+    {
+        return m_variant;
+    }
+
 signals:
     void labelChanged(QString arg);
     void colorChanged(QColor arg);
+
+    void variantChanged(QVariant variant);
 
 public slots:
     void setLabel(QString arg);
     void setColor(QColor arg);
 
+    void setVariant(QVariant variant)
+    {
+        if (m_variant == variant)
+            return;
+
+        m_variant = variant;
+        emit variantChanged(variant);
+    }
+
 private:
     QString m_label;
     QColor  m_color;
+    QVariant m_variant;
 };
 
 inline QString QGanttData::label() const{

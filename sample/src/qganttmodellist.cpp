@@ -113,7 +113,7 @@ bool QGanttModelList::removeRows(int row, int count, const QModelIndex &parent){
 
 void QGanttModelList::moveItem(QString uuid, QString direction)
 {
-    qDebug() << "item uuid" << uuid << "direction" << direction;
+    //qDebug() << "item uuid" << uuid << "direction" << direction;
     // find the index of the current item
    // qDebug() << "so how many fucking items" << m_items.count();
     int itemCurrentIndex = 0;

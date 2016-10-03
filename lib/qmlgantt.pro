@@ -23,12 +23,10 @@ HEADERS += \
     $$PWD/qrangeview.h \
     $$PWD/qabstractrangemodel.h \
     $$PWD/qganttmodel.h \
-    $$PWD/qganttmodelitem.h \
-    ../sample/src/qganttdata.h
+    $$PWD/qganttmodelitem.h
 
 SOURCES += \
     $$PWD/qrangeview.cpp \
     $$PWD/qabstractrangemodel.cpp \
     $$PWD/qganttmodel.cpp \
-    $$PWD/qganttmodelitem.cpp \
-    ../sample/src/qganttdata.cpp
+    $$PWD/qganttmodelitem.cpp

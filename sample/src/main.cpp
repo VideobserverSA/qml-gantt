@@ -24,9 +24,10 @@
 #include "qganttmodellist.h"
 #include "qganttdata.h"
 
-#include "mytestmodel.h"
+#include "mytestclass.h"
 
 Q_DECLARE_METATYPE(QGanttData*);
+Q_DECLARE_METATYPE(MyTestClass*);
 
 static int CONFIGURATION_MODEL_SIZE = 1500;
 //static int CONFIGURATION_MODEL_SIZE = 20000;
@@ -70,6 +71,10 @@ int main(int argc, char *argv[])
             QGanttData *testData = new QGanttData(m);
             testData->setColor(QColor::fromRgb(255,  100, i * (255 / numRows)) );
             testData->setLabel("aa " + QString::number(i) + " " + testItem->uuid().mid(1, 6));
+            MyTestClass* myTestClass = new MyTestClass(m);
+            myTestClass->setMyString("t: " + QString::number(i) + " " + QString::number(pos));
+            QVariant var = QVariant::fromValue(myTestClass);
+            testData->setVariant(var);
             testItem->setData(QVariant::fromValue(testData));
 
             //m->insertItem(pos, length);

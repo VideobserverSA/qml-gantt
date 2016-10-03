@@ -16,7 +16,6 @@
 
 #include "qganttmodel.h"
 #include "qganttmodelitem.h"
-#include "../sample/src/qganttdata.h"
 #include <QVariant>
 #include <QDebug>
 #include <QJsonDocument>
@@ -102,7 +101,7 @@ int QGanttModelPrivate::searchFirstIndex(qint64 position, qint64 length){
 QGanttModelItem *QGanttModelPrivate::searchByPosition(qint64 position)
 {
         foreach(QGanttModelItem *item, items) {
-            qDebug() << "putas e vinho verde" << item->position();
+            //qDebug() << "putas e vinho verde" << item->position();
             if(item->position() == position)
             {
                 return item;
@@ -315,7 +314,7 @@ QGanttModelItem *QGanttModel::removeItem(QString uuid)
 
     Q_D(QGanttModel);
 
-    qDebug() << "we have: " << d->items.count();
+    //qDebug() << "we have: " << d->items.count();
     //foreach(QGanttModelItem *item, d->items) {
     for (int i = 0 ; i < d->items.count(); i++) {
         QGanttModelItem* item = d->items.at(i);
@@ -326,7 +325,7 @@ QGanttModelItem *QGanttModel::removeItem(QString uuid)
             QGanttModelItem* temp = d->items.takeAt(i);
             endDataChange();
 
-            qDebug() << "and now: " << d->items.count();
+            //qDebug() << "and now: " << d->items.count();
 
             return temp;
 
